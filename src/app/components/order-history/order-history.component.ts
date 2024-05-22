@@ -21,6 +21,8 @@ export class OrderHistoryComponent implements OnInit {
 
   datePipe: DatePipe = new DatePipe('es-CL');
 
+  showNoResultsMessage = false;
+
   constructor(private orderHistoryService: OrderHistoryService) {}
 
   ngOnInit(): void {
@@ -70,5 +72,11 @@ export class OrderHistoryComponent implements OnInit {
         console.error('Error occurred while fetching order history:', error);
       },
     });
+    this.showMessageAfterDelay(() => this.orderHistoryList.length === 0);
+  }
+  showMessageAfterDelay(condition: () => boolean, delay: number = 2000) {
+    setTimeout(() => {
+      this.showNoResultsMessage = condition();
+    }, delay);
   }
 }

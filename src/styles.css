@@ -52,7 +52,7 @@ button {
 }
 
 img {
-  max-width: 100%;
+  max-width: 50%;
   height: auto;
 }
 
@@ -813,7 +813,7 @@ table.table.table-bordered th {
 }
 
 .detail-img {
-  width: 30%;
+  width: 20%;
 }
 /**/
 

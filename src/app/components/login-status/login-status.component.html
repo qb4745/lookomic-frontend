@@ -13,13 +13,7 @@
   <button *ngIf="isAuthenticated" (click)="logout()" class="security-btn">
     Cierra sesión
   </button>
-  <button
-    *ngIf="isAuthenticated"
-    [routerLink]="['members']"
-    class="security-btn ml-1"
-  >
-    Miembro
-  </button>
+
   <button
     *ngIf="isAuthenticated"
     [routerLink]="['order-history']"

@@ -28,8 +28,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
-  currentCategoryId: number = 1;
-  previousCategoryId: number = 1;
+  currentCategoryId: number = 0;
+  previousCategoryId: number = 0;
   currentCategoryName: string = '';
   searchMode: boolean = false;
   showNoResultsMessage = false;
@@ -109,13 +109,20 @@ export class ProductListComponent implements OnInit {
 
     this.showSpinner();
 
-    this.productService
-      .getProductListPaginate(
-        this.pageNumber - 1,
-        this.pageSize,
-        this.currentCategoryId
-      )
-      .subscribe(this.processResult());
+    if (this.currentCategoryId != 0) {
+      this.productService
+        .getProductListPaginate(
+          this.pageNumber - 1,
+          this.pageSize,
+          this.currentCategoryId
+        )
+        .subscribe(this.processResult());
+    } else {
+      console.log(`current cat id: ${this.currentCategoryId}`);
+      this.productService
+        .getAllProductListPaginate(this.pageNumber - 1, this.pageSize)
+        .subscribe(this.processResult());
+    }
 
     this.showMessageAfterDelay(() => this.products.length === 0);
     this.spinner.hide();
@@ -132,7 +139,7 @@ export class ProductListComponent implements OnInit {
   }
 
   // Show spinner after 1 second
-  showMessageAfterDelay(condition: () => boolean, delay: number = 1000) {
+  showMessageAfterDelay(condition: () => boolean, delay: number = 2000) {
     setTimeout(() => {
       this.showNoResultsMessage = condition();
     }, delay);
