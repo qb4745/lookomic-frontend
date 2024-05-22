@@ -1,0 +1,109 @@
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <div *ngIf="cartItems.length > 0">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th width="20%">Imagen del Producto</th>
+              <th width="50%">Detalle del Producto</th>
+              <th width="30%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cartItem of cartItems">
+              <td>
+                <img
+                  [src]="cartItem.imageUrl"
+                  class="img-responsive"
+                  width="150px"
+                />
+              </td>
+              <td>
+                <p>{{ cartItem.name }}</p>
+                <p>{{ cartItem.unitPrice | currency : "CLP" : "$" }}</p>
+              </td>
+              <td>
+                <div class="cart-item-quantity">
+                  <label>Cantidad:</label>
+
+                  <div class="row no-gutters">
+                    <div class="col">
+                      <button
+                        (click)="incrementQuantity(cartItem)"
+                        mat-icon-button
+                        matTooltip="Más"
+                        color="primary"
+                        aria-label="plus icon-button to add product to Cart"
+                      >
+                        <mat-icon>add</mat-icon>
+                      </button>
+                    </div>
+
+                    <div class="col ml-2 mr-2" style="padding-top: 7%">
+                      {{ cartItem.quantity }}
+                    </div>
+
+                    <div class="col">
+                      <button
+                        (click)="decrementQuantity(cartItem)"
+                        mat-icon-button
+                        matTooltip="Menos"
+                        color="primary"
+                        aria-label="plus icon-button to add product to Cart"
+                      >
+                        <mat-icon>remove</mat-icon>
+                      </button>
+                    </div>
+
+                    <div class="col-8"></div>
+                  </div>
+                </div>
+                <button
+                  (click)="remove(cartItem)"
+                  mat-mini-fab
+                  matTooltip="Eliminar"
+                  color="warn"
+                  aria-label="Example icon button with a delete icon"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <p class="mt-2">
+                  Subtotal:
+                  {{
+                    cartItem.quantity * cartItem.unitPrice
+                      | currency : "CLP" : "$"
+                  }}
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td style="font-weight: bold">
+                <p>Cantidad de productos: {{ totalQuantity }}</p>
+                <p>Envio: Gratis</p>
+                <p>Total a pagar: {{ totalPrice | currency : "CLP" : "$" }}</p>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  [routerLink]="['/checkout']"
+                >
+                  Continuar compra
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- mensaje si carro está vacio-->
+      <div
+        *ngIf="cartItems.length == 0"
+        class="alert alert-warning col-md-12"
+        role="alert"
+      >
+        Su carro está vacio.
+      </div>
+    </div>
+  </div>
+</div>

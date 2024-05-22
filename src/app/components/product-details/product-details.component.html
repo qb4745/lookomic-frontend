@@ -1,0 +1,23 @@
+<div class="detail-section">
+  <div class="container-fluid">
+    <div *ngIf="product">
+      <img src="{{ product.imageUrl }}" class="detail-img" />
+
+      <h3>{{ product.name }}</h3>
+      <div class="price">{{ product.unitPrice | currency : "CLP" : "$" }}</div>
+
+      <button (click)="addToCart(product)" mat-flat-button color="primary">
+        Agregar al Carro
+      </button>
+
+      <hr />
+      <h4>Description</h4>
+      <p>{{ product.description }}</p>
+
+      <a [routerLink]="['/products/']">Volver</a>
+    </div>
+  </div>
+  <ngx-spinner type="square-spin">
+    <p style="font-size: 20px; color: white">Cargando...</p>
+  </ngx-spinner>
+</div>

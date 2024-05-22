@@ -1,0 +1,691 @@
+<div class="main-content page-m">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <form [formGroup]="checkoutFormGroup" (ngSubmit)="onSubmit()">
+        <!-- customer form group -->
+        <div formGroupName="customer" class="form-area">
+          <h3>Datos cliente</h3>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Nombre</mat-label>
+                  <input
+                    formControlName="firstName"
+                    type="text"
+                    matInput
+                    required
+                  />
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    firstName?.invalid &&
+                    (firstName?.dirty || firstName?.touched)
+                  "
+                >
+                  <div *ngIf="firstName?.errors?.['required']">
+                    <mat-error>Ingresa un nombre</mat-error>
+                  </div>
+                  <div *ngIf="firstName?.errors?.['minlength']">
+                    <mat-error
+                      >El nombre debe tener al menos 2 carácteres
+                    </mat-error>
+                  </div>
+                  <div
+                    *ngIf="
+                      firstName?.hasError('onlyLetters') && firstName?.dirty
+                    "
+                  >
+                    <mat-error>El nombre debe contener solo letras</mat-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Ingresa tu apellido</mat-label>
+                  <input
+                    formControlName="lastName"
+                    type="text"
+                    matInput
+                    required
+                  />
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    lastName?.invalid && (lastName?.dirty || lastName?.touched)
+                  "
+                >
+                  <div *ngIf="lastName?.errors?.['required']">
+                    <mat-error>Ingresa un apellido</mat-error>
+                  </div>
+                  <div *ngIf="lastName?.errors?.['minlength']">
+                    <mat-error
+                      >El apellido debe tener al menos 2 carácteres
+                    </mat-error>
+                  </div>
+                  <div
+                    *ngIf="lastName?.hasError('onlyLetters') && lastName?.dirty"
+                  >
+                    <mat-error>El apellido debe contener solo letras</mat-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Correo</mat-label>
+                  <input
+                    formControlName="email"
+                    type="text"
+                    matInput
+                    required
+                  />
+                </mat-form-field>
+
+                <div *ngIf="email?.invalid && (email?.dirty || email?.touched)">
+                  <mat-error>Ingresa un correo electrónico válido</mat-error>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- shipping Address -->
+        <div formGroupName="shippingAddress" class="form-area">
+          <h3>Entrega</h3>
+          <h5 style="padding: 0px 0px 20px 12px">Ingresa dirección</h5>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  [style.width.%]="100"
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                >
+                  <mat-label>Región</mat-label>
+                  <mat-select
+                    (selectionChange)="getComunasByRegionId('shippingAddress')"
+                    formControlName="region"
+                    required
+                  >
+                    <mat-option
+                      *ngFor="let region of regiones"
+                      [value]="region.id"
+                    >
+                      {{ region.nombre }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    shippingAddressRegion?.invalid &&
+                    (shippingAddressRegion?.dirty ||
+                      shippingAddressRegion?.touched)
+                  "
+                >
+                  <div *ngIf="shippingAddressRegion?.errors?.['required']">
+                    <mat-error>Recuerda seleccionar una región</mat-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  [style.width.%]="100"
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                >
+                  <mat-label>Comuna</mat-label>
+                  <mat-select formControlName="comuna" required>
+                    <mat-option
+                      *ngFor="let comuna of shippingAddressComunas"
+                      [value]="comuna.nombre"
+                      >{{ comuna.nombre }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+
+                <div
+                  *ngIf="
+                    shippingAddressComuna?.invalid &&
+                    (shippingAddressComuna?.dirty ||
+                      shippingAddressComuna?.touched)
+                  "
+                >
+                  <div
+                    *ngIf="shippingAddressComuna?.errors?.['required'] || shippingAddressComuna?.hasError('isPristine')"
+                  >
+                    <mat-error
+                      >Recuerda seleccionar primero una región y luego una
+                      comuna</mat-error
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Dirección</mat-label>
+                  <input
+                    formControlName="street"
+                    type="text"
+                    matInput
+                    required
+                  />
+                </mat-form-field>
+
+                <div
+                  *ngIf="
+                    shippingAddressStreet?.invalid &&
+                    (shippingAddressStreet?.dirty ||
+                      shippingAddressStreet?.touched)
+                  "
+                >
+                  <div *ngIf="shippingAddressStreet?.errors?.['required']">
+                    <mat-error>Recuerda ingresar una calle válida</mat-error>
+                  </div>
+                  <div *ngIf="shippingAddressStreet?.errors?.['minlength']">
+                    <mat-error
+                      >La dirección debe tener al menos 5 carácteres
+                    </mat-error>
+                  </div>
+                  <div
+                    *ngIf="
+                      !shippingAddressStreet?.pristine &&
+                      (shippingAddressStreet?.hasError('notOnlyNumbers') ||
+                        shippingAddressStreet?.hasError(
+                          'onlyLettersAndNumbers'
+                        ))
+                    "
+                  >
+                    <mat-error>La dirección no es válida </mat-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Ciudad</mat-label>
+                  <input
+                    formControlName="city"
+                    type="text"
+                    matInput
+                    placeholder="Ciudad*"
+                    required
+                  />
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    shippingAddressCity?.invalid &&
+                    (shippingAddressCity?.dirty || shippingAddressCity?.touched)
+                  "
+                >
+                  <div *ngIf="shippingAddressCity?.errors?.['required']">
+                    <mat-error>Recuerda ingresar una ciudad</mat-error>
+                  </div>
+                  <div *ngIf="shippingAddressCity?.errors?.['minlength']">
+                    <mat-error
+                      >La ciudad debe tener al menos 2 carácteres
+                    </mat-error>
+                  </div>
+                  <div
+                    *ngIf="
+                      !shippingAddressCity?.pristine &&
+                      (shippingAddressCity?.hasError('notOnlyNumbers') ||
+                        shippingAddressCity?.hasError('onlyLettersAndNumbers'))
+                    "
+                  >
+                    <mat-error>La ciudad no es válida </mat-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Código postal</mat-label>
+                  <input
+                    formControlName="zipCode"
+                    type="text"
+                    matInput
+                    placeholder="Código postal*"
+                    required
+                  />
+                </mat-form-field>
+
+                <div
+                  *ngIf="
+                    shippingAddressZipCode?.invalid &&
+                    (shippingAddressZipCode?.dirty ||
+                      shippingAddressZipCode?.touched)
+                  "
+                >
+                  <div *ngIf="shippingAddressZipCode?.errors?.['required']">
+                    <mat-error
+                      >Recuerda ingresar un código postal válido</mat-error
+                    >
+                  </div>
+                  <div *ngIf="shippingAddressZipCode?.errors?.['maxlength']">
+                    <mat-error
+                      >El código postal debe contener 7 números</mat-error
+                    >
+                  </div>
+                  <div *ngIf="shippingAddressZipCode?.errors?.['minlength']">
+                    <mat-error
+                      >El código postal debe contener 7 números</mat-error
+                    >
+                  </div>
+
+                  <div *ngIf="shippingAddressZipCode?.hasError('onlyNumbers')">
+                    <mat-error
+                      >Un código postal debe contar con solo 7
+                      números</mat-error
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add check box to copy shipping to billing -->
+        <!-- <div class="input-space">
+          <label class="au-checkbox">
+            <input
+              type="checkbox"
+              (change)="copyShippingAddresstoBillingAddress($event)"
+            />
+            <span class="au-checkmark"></span>Billing Address same as Shipping
+            Address
+          </label>
+        </div> -->
+
+        <!-- Billing Address -->
+        <!-- <div formGroupName="billingAddress" class="form-area">
+          <h3>Billing Address</h3>
+
+          <div class="row">
+            <div class="col-md-2"><label>Country</label></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <select formControlName="region">
+                  <option>TO DO</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2"><label>Street</label></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <input formControlName="street" type="text" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2"><label>City</label></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <input formControlName="city" type="text" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2"><label>State</label></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <select formControlName="comuna">
+                  <option>TO DO</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2"><label>Zip Code</label></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <input formControlName="zipCode" type="text" />
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Credit Card -->
+        <!-- <div formGroupName="creditCard" class="form-area">
+          <h3>Medio de pago</h3>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  [style.width.%]="100"
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                >
+                  <mat-label>Emisor de la tarjeta</mat-label>
+                  <mat-select formControlName="cardType" required>
+                    <mat-option value="Visa">Visa</mat-option>
+                    <mat-option value="Mastercard">Mastercard</mat-option>
+                    <mat-option value="American Express"
+                      >American Express</mat-option
+                    >
+                    <mat-option value="Diners Club">Diners Club</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    creditCardCardType?.invalid &&
+                    (creditCardCardType?.dirty || creditCardCardType?.touched)
+                  "
+                >
+                  <div *ngIf="creditCardCardType?.errors?.['required']">
+                    <mat-error
+                      >Recuerda seleccionar el emisor de la tarjeta</mat-error
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Nombre en tarjeta</mat-label>
+                  <input
+                    formControlName="nameOnCard"
+                    type="text"
+                    matInput
+                    required
+                  />
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    creditCardNameOnCard?.invalid &&
+                    (creditCardNameOnCard?.dirty ||
+                      creditCardNameOnCard?.touched)
+                  "
+                >
+                  <div
+                    *ngIf="
+                      (creditCardNameOnCard?.hasError('onlyLetters') &&
+                      !creditCardNameOnCard?.pristine)
+                      || creditCardNameOnCard?.errors?.['minlength']
+                      || creditCardNameOnCard?.errors?.['required']
+                    "
+                  >
+                    <mat-error
+                      >Ingresa el nombre que aparece en la tarjeta</mat-error
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Número de tarjeta</mat-label>
+                  <input
+                    formControlName="cardNumber"
+                    type="text"
+                    matInput
+                    required
+                  />
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    creditCardCardNumber?.invalid &&
+                    (creditCardCardNumber?.dirty ||
+                      creditCardCardNumber?.touched)
+                  "
+                >
+                  <div
+                    *ngIf="creditCardCardNumber?.errors?.['required']; else creditCardCardNumberErrorType"
+                  >
+                    <mat-error>Ingresa los números de la tarjeta</mat-error>
+                  </div>
+                  <ng-template #creditCardCardNumberErrorType>
+                    <div
+                      *ngIf="!creditCardCardNumber?.pristine &&
+                    (creditCardCardNumber?.hasError('onlyNumbers')
+                  || creditCardCardNumber?.errors?.['minlength']
+                  || creditCardCardNumber?.errors?.['maxlength']
+                  || creditCardCardNumber?.hasError('isValidCreditCard'))
+                "
+                    >
+                      <mat-error
+                        >Los números de la tarjeta no son válidos.</mat-error
+                      >
+                    </div></ng-template
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                  [style.width.%]="100"
+                >
+                  <mat-label>CVV</mat-label>
+                  <input
+                    formControlName="securityCode"
+                    type="text"
+                    matInput
+                    required
+                  />
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    creditCardSecurityCode?.invalid &&
+                    (creditCardSecurityCode?.dirty ||
+                      creditCardSecurityCode?.touched)
+                  "
+                >
+                  <div
+                    *ngIf="
+                    (creditCardSecurityCode?.hasError('onlyNumbers'))
+                    || creditCardSecurityCode?.errors?.['minlength']
+                    || creditCardSecurityCode?.errors?.['maxlength']
+                    || creditCardSecurityCode?.errors?.['required']
+                  "
+                  >
+                    <mat-error>El CVV no es válido</mat-error>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  [style.width.%]="100"
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                >
+                  <mat-label>Mes de vencimiento</mat-label>
+                  <mat-select formControlName="expirationMonth">
+                    <mat-option
+                      *ngFor="let month of creditCardMonths"
+                      [value]="month.toString()"
+                      >{{ month }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    creditCardExpirationMonth?.invalid &&
+                    (creditCardExpirationMonth?.dirty ||
+                      creditCardExpirationMonth?.touched)
+                  "
+                >
+                  <div *ngIf="creditCardExpirationMonth?.errors?.['required']">
+                    <mat-error
+                      >Recuerda seleccionar el mes de vencimiento de la
+                      tarjeta</mat-error
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <mat-form-field
+                  [style.width.%]="100"
+                  appearance="outline"
+                  [floatLabel]="getFloatLabelValue()"
+                >
+                  <mat-label>Año de vencimiento</mat-label>
+                  <mat-select
+                    formControlName="expirationYear"
+                    (selectionChange)="handleMonthsAndYears()"
+                  >
+                    <mat-option
+                      *ngFor="let year of creditCardYears"
+                      [value]="year"
+                      >{{ year }}</mat-option
+                    >
+                  </mat-select>
+                </mat-form-field>
+                <div
+                  *ngIf="
+                    creditCardeExpirationYear?.invalid &&
+                    (creditCardeExpirationYear?.dirty ||
+                      creditCardeExpirationYear?.touched)
+                  "
+                >
+                  <div *ngIf="creditCardeExpirationYear?.errors?.['required']">
+                    <mat-error
+                      >Recuerda seleccionar el año de vencimiento de la
+                      tarjeta</mat-error
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Credit Card Stripe -->
+        <div formGroupName="creditCard" class="form-area">
+          <h3>Medio de pago</h3>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="input-space">
+                <div id="card-element"></div>
+                <div
+                  id="card-errors"
+                  class="displayError.textContext!=='': 'alert alert-danger mt-1'"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order details -->
+        <div class="form-area">
+          <h3>Resumen de la compra</h3>
+          <div class="summary-item">
+            <span class="summary-label">Cantidad de productos:</span>
+            <span class="summary-value"
+              ><b>{{ totalQuantity }}</b></span
+            >
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Envío:</span>
+            <span class="summary-value"><b>Gratis</b></span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Total a pagar:</span>
+            <span class="summary-value"
+              ><b>{{ totalPrice | currency : "CLP" : "$" }}</b></span
+            >
+          </div>
+        </div>
+
+        <!-- submit button-->
+        <div class="text-center">
+          <button
+            mat-flat-button
+            color="primary"
+            [disabled]="isIrAPagarButtonDisabled"
+          >
+            Ir a pagar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

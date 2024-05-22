@@ -1,0 +1,16 @@
+<div class="cart-area d-n">
+  <a [routerLink]="['cart-details']">
+    <div class="total">
+      {{ totalPrice | currency : "CLP" : "$" }}
+      <span> {{ totalQuantity }}</span>
+    </div>
+    <i
+      ><mat-icon
+        matBadge="{{ totalQuantity }}"
+        matBadgeColor="warn"
+        aria-hidden="false"
+        >shopping_cart</mat-icon
+      ></i
+    >
+  </a>
+</div>

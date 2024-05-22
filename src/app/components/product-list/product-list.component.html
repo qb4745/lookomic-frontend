@@ -1,0 +1,77 @@
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <h4 *ngIf="currentCategoryName">Category: {{ currentCategoryName }}</h4>
+
+    <hr />
+    <div class="container-fluid">
+      <div class="row">
+        <!-- loop aca -->
+        <div *ngFor="let product of products" class="col-md-3">
+          <div class="product-box">
+            <a [routerLink]="['/products/', product.id]">
+              <img src="{{ product.imageUrl }}" alt="" class="img-responsive" />
+            </a>
+
+            <a [routerLink]="['/products/', product.id]">
+              <h1>{{ product.name }}</h1>
+            </a>
+            <div class="price">
+              {{ product.unitPrice | currency : "CLP" : "$" }}
+            </div>
+
+            <button
+              (click)="addToCart(product)"
+              mat-flat-button
+              color="primary"
+            >
+              Agregar al Carro
+            </button>
+          </div>
+          <!-- if products empty then display a message-->
+        </div>
+        <div
+          *ngIf="showNoResultsMessage"
+          class="alert alert-warning col-md-12"
+          role="alert"
+        >
+          No se encontraron resultados.
+        </div>
+      </div>
+      <!--  Begin footer-->
+      <div class="footer-pagination d-flex justify-content-end">
+        <div class="d-flex align-items-center" style="padding-left: -30%">
+          <div class="mr-2">
+            <ngb-pagination
+              [(page)]="pageNumber"
+              [pageSize]="pageSize"
+              [collectionSize]="totalElements"
+              [maxSize]="5"
+              [rotate]="true"
+              [ellipses]="false"
+              (pageChange)="listProducts()"
+              [boundaryLinks]="true"
+            ></ngb-pagination>
+          </div>
+          <div class="d-flex align-items-center" style="padding-left: 10%">
+            <span class="mr-2">ver</span>
+            <select
+              #pageSizeSelect
+              (change)="updatePageSize(pageSizeSelect.value)"
+            >
+              <option selected="true">12</option>
+              <option>24</option>
+              <option>36</option>
+              <option>48</option>
+            </select>
+            <span>productos por página</span>
+          </div>
+        </div>
+      </div>
+
+      <!--  end footer-->
+    </div>
+  </div>
+  <ngx-spinner type="square-spin">
+    <p style="font-size: 20px; color: white">Cargando...</p>
+  </ngx-spinner>
+</div>
