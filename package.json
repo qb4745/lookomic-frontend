@@ -24,7 +24,7 @@
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
     "@okta/okta-angular": "^6.4.0",
     "@okta/okta-auth-js": "^7.6.0",
-    "@okta/okta-signin-widget": "^7.18.0",
+    "@okta/okta-signin-widget": "^7.24.2",
     "@popperjs/core": "^2.11.8",
     "@stripe/stripe-js": "^3.4.0",
     "bootstrap": "^5.3.3",
